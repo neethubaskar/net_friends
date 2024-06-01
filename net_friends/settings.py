@@ -90,8 +90,8 @@ DATABASES = {
         'NAME': 'social_network_db',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': ''
+        'HOST': 'db',
+        'PORT': '5432'
     }
 }
 
