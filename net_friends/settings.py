@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # system apps
     'user_profile',
+    'friends',
 ]
 
 MIDDLEWARE = [

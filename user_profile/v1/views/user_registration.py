@@ -39,16 +39,19 @@ class UserRegistrationView(generics.CreateAPIView):
             serializer.save()
             return Response({
                 "message": "User registered successfully.",
+                'status': 'S'
             }, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response({
                 "errors": e.detail,
-                "message": "User registration failed."
+                "message": "User registration failed.",
+                'status': 'F'
             }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({
                 "errors": str(e),
-                "message": "Something went wrong."
+                "message": "Something went wrong.",
+                'status': 'F'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -90,23 +93,27 @@ class LoginView(APIView):
                 add_access_token_validity_cookie(response)
                 response.data = {
                     'message': 'User has been logged in successfully',
-                    'token': token['access']
+                    'token': token['access'],
+                    'status': 'S'
                 }
                 return response
             else:
                 return Response({
                 "errors": "Invalid credentials.",
-                "message": "Failed to login."
+                "message": "Failed to login.",
+                'status': 'F'
             }, status=status.HTTP_400_BAD_REQUEST)
         except ValidationError as e:
             return Response({
                 "errors": e.detail,
-                "message": "Failed to login."
+                "message": "Failed to login.",
+                'status': 'F'
             }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({
                 "errors": str(e),
-                "message": "Something went wrong."
+                "message": "Something went wrong.",
+                'status': 'F'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -125,15 +132,16 @@ class LogoutView(APIView):
                     domain=settings.TOKEN_COOKIE_DOMAIN
                 )
             logout(request)
-            response['message'] = 'User has been logged out successfully.'
             response.data = {
-                    'message': 'User has been logged out successfully.'
+                    'message': 'User has been logged out successfully.',
+                    'status': 'S'
                 }
             return response
         except (TokenError, Exception) as e:
             return Response({
                 "errors": str(e),
-                "message": "Something went wrong."
+                "message": "Something went wrong.",
+                'status': 'F'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
@@ -162,6 +170,7 @@ class UserSearchView(generics.ListAPIView):
         response = super().list(request, *args, **kwargs)
         return Response({
                 "data": response.data,
-            }, status=status.HTTP_200_CREATED)
+                'status': 'S'
+            }, status=status.HTTP_200_OK)
 
         

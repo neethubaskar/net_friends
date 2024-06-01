@@ -52,6 +52,7 @@ class UserProfile(AbstractUser):
     email = models.EmailField('email', unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     date_joined = models.DateTimeField(default=timezone.now)
     followers_count = models.PositiveIntegerField(default=0)
     request_count = models.PositiveIntegerField(default=0)

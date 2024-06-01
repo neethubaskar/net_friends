@@ -13,10 +13,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True,
                                      validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
+    date_of_birth = serializers.DateField(
+        input_formats=["%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y"], required=False, allow_null=True)
 
     class Meta:
         model = UserProfile
-        fields = ('email', 'password', 'password2', 'first_name', 'last_name')
+        fields = ('email', 'password', 'password2', 'first_name', 'last_name', 'date_of_birth')
 
     def validate_email(self, value):
         """
@@ -25,10 +27,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         :return: The validated email.
         :raises serializers.ValidationError: If the email is already in use.
         """
-        if UserProfile.objects.filter(email=value).exists():
+        if UserProfile.objects.filter(email=value.lower()).exists():
             raise serializers.ValidationError(
                 "A user with that email already exists.")
-        value = value.lower()
         return value
 
     def validate(self, attrs):
@@ -80,11 +81,15 @@ class LoginSerializer(serializers.Serializer):
         return value
 
 
-
 class UserSearchSerializer(serializers.ModelSerializer):
     """
     Serializer for searching users by email or name.
     """
+    date_joined = serializers.DateTimeField(
+        format='%d/%m/%Y %H:%M:%S', required=False, allow_null=True)
+    date_of_birth = serializers.DateField(
+        format='%d/%m/%Y', required=False, allow_null=True)
     class Meta:
         model = UserProfile
-        fields = ('id', 'email', 'first_name', 'last_name')
+        fields = ('id', 'email', 'first_name', 'last_name', 'date_of_birth', 
+                  'date_joined', 'followers_count', 'request_count')
